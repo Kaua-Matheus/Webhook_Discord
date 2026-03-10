@@ -1,0 +1,9 @@
+# Discord Webhook Manager
+discord.py
+
+# Music Download
+yt-dlp
+
+
+# Env
+dotenv
