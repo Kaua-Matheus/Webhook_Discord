@@ -1,17 +1,19 @@
 # Discord.py
 import discord
-from discord import app_commands
+from discord.ext import commands
 
-class Bot(discord.Client):
+class Bot(commands.Bot):
     def __init__(self):
         intents = discord.Intents.all()
         super().__init__(
             command_prefix="$",
             intents=intents,
         )
-        self.tree = app_commands.CommandTree(self)
 
     async def setup_hook(self):
+        await self.load_extension("utils.cogs.commands")
+        print("Loading bot...")
+        
         await self.tree.sync()
 
     async def on_ready(self):

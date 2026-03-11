@@ -1,9 +1,6 @@
 # Build-in Packages
 import os
 
-# Discord.py
-import discord
-
 # .Env
 from dotenv import load_dotenv
 
@@ -20,11 +17,6 @@ if load_dotenv():
 
         # Bot instance
         bot = Bot()
-
-        # First Command of Capital
-        @bot.tree.command(name="hello-world", description="First Command")
-        async def helloworld(interaction:discord.Interaction):
-            await interaction.response.send_message(f"Hello {interaction.user.mention}!")
 
         bot.run(TOKEN)
         
