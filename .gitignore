@@ -4,5 +4,10 @@
 
 # Python
 __init__.py
-
 __pycache__/
+
+# Extra
+/out
+
+# Logs
+app.log

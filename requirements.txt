@@ -1,9 +1,12 @@
 # Discord Webhook Manager
 discord.py
+"discord.py[voice]"
 
 # Music Download
 yt-dlp
 
+# PyNaCl
+PyNaCl
 
 # Env
 dotenv
