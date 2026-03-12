@@ -17,7 +17,7 @@ else:
 
 class Event(commands.Cog):
     def __init__(self, client: commands.Bot):
-        self.cliente = client
+        self.client = client
 
         
     # Events
