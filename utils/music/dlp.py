@@ -17,7 +17,7 @@ logging.info('O programa foi iniciado')
 
 class Downloader():
     def __init__(self):
-        self.queue = [str]
+        self.queue = []
         self.current = None
         self.voice_client = None
 
