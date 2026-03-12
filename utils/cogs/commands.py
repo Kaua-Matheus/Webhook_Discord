@@ -1,10 +1,8 @@
-# SYS
-from asyncio import sleep
-
 # Discord
 from discord.ext import commands
 from discord import app_commands, Interaction
 from discord import Embed
+
 
 class Command(commands.Cog):
     def __init__(self, client:commands.Bot):
@@ -80,19 +78,6 @@ class Command(commands.Cog):
     async def plus(self, interaction: Interaction, num_1: int, num_2: int):
             result = num_1 + num_2
             await interaction.response.send_message(f"The result is {result}")
-
-    # Events
-    @commands.Cog.listener(
-        name="Welcome new member",
-    )
-    async def on_member_join(self, member, channel: int):
-        welcome_channel = self.client.get_channel(channel) # Insert a channel number
-        message = await welcome_channel.send(f"Welcome {member.mention}")
-
-        await sleep(20)
-
-        # Delete the message after the timer
-        await message.delete()
 
 
 

@@ -12,6 +12,7 @@ class Bot(commands.Bot):
 
     async def setup_hook(self):
         await self.load_extension("utils.cogs.commands")
+        await self.load_extension("utils.cogs.events")
         print("Loading bot...")
         
         await self.tree.sync()
