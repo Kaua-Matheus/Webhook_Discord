@@ -8,6 +8,7 @@ from ..music.dlp import Downloader
 
 # SYS
 from asyncio import run_coroutine_threadsafe
+import os
 
 
 class Music(commands.Cog):
@@ -64,18 +65,25 @@ class Music(commands.Cog):
 
         await interaction.response.defer()
 
+        music_info = self.downloader.get_music_info(query)
+
         file_path = self.downloader.download(query)
 
-        if not file_path:
+        if not file_path or not os.path.exists(file_path):
             await interaction.followup.send("Erro ao baixar música")
             return
         
-        # If is already playing, add to queue
-        if self.voice_client.is_playing():
-            self.queue.append({"path": file_path, "title": query})
-            await interaction.followup.send(f"Música adicionada a fila: {query}")
+        song_data = {
+            "path": file_path,
+            "title": music_info['title'],
+            "query": query
+        }
+
+        if self.voice_client.is_playing() or self.is_paused:
+            self.queue.append(song_data)
+            await interaction.followup.send(f"Música adicionada á fila: **{music_info['title']}**")
         else:
-            await self._play_song(interaction, file_path, query)
+            await self._play_song(interaction, song_data)
 
     
     ## Stop
@@ -234,8 +242,19 @@ class Music(commands.Cog):
 
     # Privated
     ## Play Song
-    async def _play_song(self, interaction, file_path, title):
+    async def _play_song(self, interaction, song_data):
         try:
+            file_path = song_data["path"]
+            title = song_data["title"]
+
+            if not os.path.exists(file_path):
+                await interaction.followup.send(f"Arquivo de música não encontrado: {title}")
+
+                if self.queue:
+                    next_song = self.queue.pop(0)
+                    await self._play_song(interaction, next_song)
+                return
+
             source = discord.FFmpegPCMAudio(file_path)
             self.voice_client.play(
                 source,
@@ -245,7 +264,7 @@ class Music(commands.Cog):
                 )
             )
 
-            self.current_song = {"path": file_path, "title": title}
+            self.current_song = song_data
             self.is_paused = False
 
             embed = discord.Embed(

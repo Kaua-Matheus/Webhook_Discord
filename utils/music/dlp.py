@@ -17,9 +17,6 @@ logging.info('O programa foi iniciado')
 
 class Downloader():
     def __init__(self):
-        self.queue = []
-        self.current = None
-        self.voice_client = None
 
         if load_dotenv():
             self.OUT_PATH=os.getenv("OUT_PATH")
@@ -43,37 +40,60 @@ class Downloader():
                 'preferredcodec': 'mp3',
                 'preferredquality': '192',
             }],
-            'download_archive': os.path.join(self.OUT_PATH, 'download.txt'),
             'noplaylist': True,
             'quiet': False,
-            'default_search': 'ytsearch1'
+            'default_search': 'ytsearch1',
+            'ignoreerrors': True
         }
         pass
-
-    def add_to_queue(self, music: str):
-        """
-        Add a music in the queue
-        """
-        self.queue.append(music)
-
-
-    def next_music(self):
-        if len(self.queue) > 0:
-            # Return the first element
-            return self.queue.pop(0)
-        else:
-            return None
 
 
     def download(self, music: str):
         with YoutubeDL(self.ydl_opt) as ydl:
             try:
-                ydl.download(f"{music}")
+                info = ydl.extract_info(f"ytsearch1:{music}", download=False)
+                
+                if 'entries' in info and info['entries']:
+                    video_info = info['entries'][0]
+                    video_title = video_info.get('title', 'Unknown')
 
-                files = [f for f in os.listdir(self.OUT_PATH) if f.endswith(".mp3")]
-                if files:
-                    files.sort(key=lambda x: os.path.getmtime(os.path.join(self.OUT_PATH, x)), reverse=True)
-                    return os.path.join(self.OUT_PATH, files[0])
+                    safe_title = "".join(c for c in video_title if c.isalnum() or c in (' ', '-', '_')).rstrip()
+                    expected_file = os.path.join(self.OUT_PATH, f"{safe_title}.mp3")
+                    
+                    if os.path.exists(expected_file):
+                        print(f"Arquivo já existe: {expected_file}")
+                        return expected_file
+                    
+                    ydl.download([f"ytsearch1:{music}"])
+                    
+                    files = [f for f in os.listdir(self.OUT_PATH) if f.endswith(".mp3")]
+                    if files:
+                        files.sort(key=lambda x: os.path.getmtime(os.path.join(self.OUT_PATH, x)), reverse=True)
+                        return os.path.join(self.OUT_PATH, files[0])
+                    
+                    if os.path.exists(expected_file):
+                        return expected_file
+                        
+                return None
+                
             except Exception as err:
-                print(f"A Generic error occuried: {err}")
-                logging.error(f"A Generic error occuried: {err}")
+                print(f"A Generic error occurred: {err}")
+                logging.error(f"A Generic error occurred: {err}")
+                return None
+            
+            
+    def get_music_info(self, music: str):
+        """Extrai informações da música sem baixar"""
+        with YoutubeDL({'quiet': True, 'default_search': 'ytsearch1'}) as ydl:
+            try:
+                info = ydl.extract_info(f"ytsearch1:{music}", download=False)
+                if 'entries' in info and info['entries']:
+                    video_info = info['entries'][0]
+                    return {
+                        'title': video_info.get('title', music),
+                        'duration': video_info.get('duration', 0),
+                        'uploader': video_info.get('uploader', 'Unknown')
+                    }
+            except Exception as e:
+                print(f"Erro ao extrair info: {e}")
+                return {'title': music, 'duration': 0, 'uploader': 'Unknown'}
