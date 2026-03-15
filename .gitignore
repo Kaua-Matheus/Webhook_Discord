@@ -8,6 +8,7 @@ __pycache__/
 
 # Extra
 /out
+history.json
 
 # Logs
 app.log

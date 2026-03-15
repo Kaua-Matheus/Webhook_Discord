@@ -10,3 +10,6 @@ PyNaCl
 
 # Env
 dotenv
+
+# groq
+groq
