@@ -14,6 +14,7 @@ class Bot(commands.Bot):
         await self.load_extension("utils.cogs.commands")
         await self.load_extension("utils.cogs.events")
         await self.load_extension("utils.cogs.music")
+        await self.load_extension("utils.cogs.ai")
         print("Loading bot...")
         
         await self.tree.sync()
