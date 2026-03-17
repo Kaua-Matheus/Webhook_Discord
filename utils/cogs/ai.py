@@ -34,14 +34,9 @@ class AI(commands.Cog):
             answer = self.llama.send_message(question)
 
             embed = discord.Embed(
-                title="Pergunta",
-                description=f"**{question}**",
+                title="Resposta IA",
+                description=f"**{answer}**", # 4096 Char Limit
                 color=0x00ff00
-            )
-
-            embed.add_field(
-                name="Resposta Llama",
-                value=f"IA: {answer}",
             )
             await interaction.response.send_message(embed=embed)
             return
