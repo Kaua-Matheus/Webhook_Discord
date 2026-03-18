@@ -4,7 +4,7 @@ from discord.ext import commands
 from discord import app_commands, Interaction
 
 # Internal
-from ..openai.chat import Llama
+from ..ml_models.text_chat import Llama
 
 
 class AI(commands.Cog):

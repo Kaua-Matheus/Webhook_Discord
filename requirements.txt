@@ -1,3 +1,11 @@
+# PyTorch
+--index-url https://download.pytorch.org/whl/cu130
+torch
+torchvision
+
+
+accelerate
+
 # Discord Webhook Manager
 discord.py
 "discord.py[voice]"
@@ -11,5 +19,11 @@ PyNaCl
 # Env
 dotenv
 
-# groq
+# Groq
 groq
+
+# Transformers
+transformers
+
+# Audio
+librosa
